@@ -12,10 +12,11 @@ class User extends CI_Controller{
 			$this->welcome();
 		}
 		else{
-			$data['title']= 'Home';
+			$this->login();
+			/* $data['title']= 'Home';
 			$this->load->view('header_view',$data);
 			$this->load->view("registration_view.php", $data);
-			$this->load->view('footer_view',$data);
+			$this->load->view('footer_view',$data); */
 		}
 	}
 	public function welcome()
@@ -27,12 +28,34 @@ class User extends CI_Controller{
 	}
 	public function login()
 	{
-		$email=$this->input->post('email');
-		$password=md5($this->input->post('pass'));
+		
+			$email=$this->input->post('email');
+			$password=md5($this->input->post('pass'));
 
-		$result=$this->user_model->login($email,$password);
-		if($result) $this->welcome();
-		else        $this->index();
+			$result=$this->user_model->login($email,$password);
+			if ($result) {
+				$this->welcome();
+			} else {      
+				//$this->index();
+				$data['title']= 'Login';
+				$this->load->view('header_view',$data);
+				$this->load->view('login_view.php', $data);
+				$this->load->view('footer_view',$data);
+			}
+			
+			if ($this->session->userdata('logged_in') == true) {
+				redirect($this->welcome, 'refresh');
+			}
+		
+		
+		
+	}
+	public function register()
+	{
+		$data['title']= 'Sign Up';
+		$this->load->view('header_view',$data);
+		$this->load->view("registration_view.php", $data);
+		$this->load->view('footer_view',$data);
 	}
 	public function thank()
 	{
@@ -46,13 +69,14 @@ class User extends CI_Controller{
 		$this->load->library('form_validation');
 		// field name, error message, validation rules
 		$this->form_validation->set_rules('user_name', 'User Name', 'trim|required|min_length[4]|xss_clean');
+		$this->form_validation->set_rules('name', 'Your Name', 'trim|required|min_length[5]|xss_clean');
 		$this->form_validation->set_rules('email_address', 'Your Email', 'trim|required|valid_email');
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[4]|max_length[32]');
 		$this->form_validation->set_rules('con_password', 'Password Confirmation', 'trim|required|matches[password]');
 
 		if($this->form_validation->run() == FALSE)
 		{
-			$this->index();
+			$this->register();
 		}
 		else
 		{
@@ -70,7 +94,7 @@ class User extends CI_Controller{
 		);
 		$this->session->unset_userdata($newdata );
 		$this->session->sess_destroy();
-		$this->index();
+		$this->login();
 	}
 }
 ?>

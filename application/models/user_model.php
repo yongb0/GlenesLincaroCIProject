@@ -7,7 +7,8 @@ class User_model extends CI_Model {
     }
 	function login($email,$password)
     {
-		$this->db->where("email",$email);
+		$where = '(email="'.$email.'" OR username="'.$email.'")';
+		$this->db->where($where);
         $this->db->where("password",$password);
             
         $query=$this->db->get("user");
@@ -23,8 +24,14 @@ class User_model extends CI_Model {
 	                    'logged_in' 	=> TRUE,
                    );
 			}
-            	$this->session->set_userdata($newdata);
-                return true;            
+			/* $updateData=array("last_login_time" => date('Y-m-d H:i:s'));
+				
+			//die($rows->id.'ddddddddddddd');
+			$this->db->where("id",$rows->id);
+			$this->db->update("user",$updateData);  */
+           
+			$this->session->set_userdata($newdata);
+            return true;            
 		}
 		return false;
     }
@@ -32,8 +39,10 @@ class User_model extends CI_Model {
 	{
 		$data=array(
 			'username'=>$this->input->post('user_name'),
+			'name'=>$this->input->post('name'),
 			'email'=>$this->input->post('email_address'),
-			'password'=>md5($this->input->post('password'))
+			'password'=>md5($this->input->post('password')),
+			'created'=>date('Y-m-d H:i:s')
 			);
 		$this->db->insert('user',$data);
 	}
