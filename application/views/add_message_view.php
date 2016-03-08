@@ -1,6 +1,6 @@
 <div class="glogForm" style="width:45%! important;">
 
-<form action="/GlenesLincaroProject/Message/add" class="well" id="MessageAddForm" method="post" accept-charset="utf-8">
+<form action="<?php echo base_url(); ?>message/add" class="well" id="MessageAddForm" method="post" accept-charset="utf-8">
     <div style="display:none;">
         <input type="hidden" name="_method" value="POST">
     </div>	
@@ -52,7 +52,7 @@ jQuery(document).ready(function () {
                         }else{
                             var src = 'src="<?php echo base_url(); ?>images/default-profile.png"';
                         }
-                        jQuery('#DropdownCountry').append('<li role="presentation" ><img '+src+' style="width:30px;"> ' + value['name'] + '</li>');
+                        jQuery('#DropdownCountry').append('<li role="presentation" data-val="'+value['id']+'"><img '+src+' style="width:30px;"> ' + value['name'] + '</li>');
                     }
                 });
             }
@@ -60,6 +60,7 @@ jQuery(document).ready(function () {
     });
     jQuery('ul.txtcountry').on('click', 'li', function () {
         jQuery('#country').val(jQuery(this).text());
+        jQuery('input#message-to').val(jQuery(this).data('val'));
     });
 });
 </script>

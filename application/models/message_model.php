@@ -7,15 +7,21 @@ class Message_model extends CI_Model {
     }
 
 	public function new_message() {
-		/* $data=array(
-			'username' => $this->input->post('user_name'),
-			'name'=>$this->input->post('name'),
-			'email'=>$this->input->post('email_address'),
-			'password'=>md5($this->input->post('password')),
+		$data=array(
+			'to_id' => $this->input->post('to_id'),
+			'from_id'=>$this->input->post('from_id'),
+			'content'=>$this->input->post('content'),
 			'created'=>date('Y-m-d H:i:s')
 			);
-		$this->db->insert('message',$data); */
+		$this->db->insert('messages',$data);
 	}
+    
+    public function get_my_recipients($user_id) {
+        
+        $query = $this->db->query('SELECT to_id FROM messages WHERE from_id='.$user_id.' GROUP BY to_id ORDER BY created ASC');
+        return $query->result_array();
+		
+    }
     
 }
 ?>
