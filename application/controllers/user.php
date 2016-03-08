@@ -125,7 +125,7 @@ class User extends CI_Controller{
         if ($this->session->userdata('logged_in') == true) {
             $data = $this->user_model->get_user_info($this->session->userdata('user_id'));
         }
-        
+       
         if ($this->input->post()) {
             
             $this->form_validation->set_rules('name', 'User Name', 'trim|required|min_length[5]| max_length[20]|xss_clean');
@@ -137,33 +137,20 @@ class User extends CI_Controller{
                 redirect('user/profile');
             }
             $user_id = $this->session->userdata('user_id');
+           
             if ($this->input->post('_method') == 'PUT') {
-            
-                list($txt, $ext) = explode('.',$_FILES['img']['name']);
-                $newImageName = time().'.'.$ext;
-                
-                $config = array(
-                        'upload_path' => "images/avatar",
-                        'allowed_types' => "gif|jpg|png|jpeg|pdf",
-                        'overwrite' => TRUE,
-                        'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
-                        'max_height' => "768",
-                        'max_width' => "1024",
-                        'file_name' => $newImageName
-                    );
-                $this->load->library('upload', $config);
-                
-                if($this->upload->do_upload('img'))
-                {
-                    $this->user_model->add_image($user_id, $newImageName);
+                $upload_fail = $this->profile_upload_fail($user_id);
+                if ($upload_fail == false ) {
                     redirect('user/profile');
-                }
-                else
-                {
-                    $error = $this->upload->display_errors();
+                } else {
+                    $error = $upload_fail;
+                    
                 }
             }
+            
+            
         }
+       
         $data['upload_error'] = $error;
         $data['title'] = 'Edit Info';
         $this->load->view('header_view',$data);
@@ -174,10 +161,10 @@ class User extends CI_Controller{
        
     }
     
-    public function do_upload($user_id){
-        $this->load->helper('html');
-       
-        if ($this->input->post('_method') == 'PUT') {
+    /*
+    Return upload error message if it fails
+    */
+    public function profile_upload_fail($user_id){
             
             list($txt, $ext) = explode('.',$_FILES['img']['name']);
             $newImageName = time().'.'.$ext;
@@ -196,20 +183,16 @@ class User extends CI_Controller{
             if($this->upload->do_upload('img'))
             {
                 $this->user_model->add_image($user_id, $newImageName);
-                /* $data = array('upload_data' => $this->upload->data());
-                $this->load->view('upload_success',$data); */
-                redirect('user/profile');
+                return false;
             }
             else
             {
+            
                 $error = $this->upload->display_errors();
+                
             }
-        }
-            //die('form not submitted');
-            $data['upload_error'] = $error;
-            $this->load->view('header_view',$data);
-            $this->load->view('edit_view.php', $data);
-            $this->load->view('footer_view',$data);
+       
+        return $error;
         
     }
  
@@ -243,6 +226,12 @@ class User extends CI_Controller{
         } else {
             return true;
         }
+    }
+    
+    public function search_user(){
+        $keyword=$this->input->post('keyword');
+        $data=$this->user_model->GetRow($keyword);        
+        echo json_encode($data);
     }
     
     

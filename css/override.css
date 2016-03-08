@@ -150,7 +150,6 @@ form {
 input[type="text"], textarea {
     clear: both;
     font-size: 14px;
-    font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
     padding: 1%;
     width: 98%;
 }
@@ -168,4 +167,23 @@ button.Zebra_DatePicker_Icon {
 
 .col-sm-3{
    border-right: 1px solid #C3C0C0;
+}
+
+.searchRecip .dropdown-menu {
+    top: 95%! important;
+    left: -14px! important; 
+    min-width: 97.5%! important;
+}
+
+.searchRecip .dropdown-menu  li{
+    padding: 5px 10px 5px 10px;
+}
+.searchRecip .dropdown-menu  li:hover{
+    background: #5BA2EF;
+    color: #ffffff;
+}
+.searchRecip .dropdown-menu  li image{
+    width:30px;
+    border-radius:5px;
+    margin-right:20px;
 }

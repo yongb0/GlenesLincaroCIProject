@@ -104,5 +104,11 @@ class User_model extends CI_Model {
 		$return = $this->db->update("user",$updateData);
      
     }
+    
+    public function GetRow($keyword) {        
+        $this->db->order_by('id', 'DESC');
+        $this->db->like("name", $keyword);
+        return $this->db->get('user')->result_array();
+    }
 }
 ?>
