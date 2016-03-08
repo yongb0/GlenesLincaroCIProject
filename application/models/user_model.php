@@ -96,5 +96,13 @@ class User_model extends CI_Model {
 			return $query->result_array()[0];
 		}
 	}
+    
+    function add_image($user_id, $newImageName) {
+        
+        $updateData=array("image" => $newImageName);
+		$this->db->where("id",$user_id);
+		$return = $this->db->update("user",$updateData);
+     
+    }
 }
 ?>

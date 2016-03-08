@@ -30,10 +30,12 @@
 								$date = '';
 								$joindate = '';
 								$lastlogin = '';
-								$birthdate = '';
-								if ($birthdate) {
+								
+								if ($birthdate!='') {
 									$date = date('M-d-Y', strtotime($birthdate));
-								}
+								} else {
+                                    $date = '';
+                                }
 								if ($created!='') {
 									$joindate = date('M-d-Y', strtotime($created));
 								}

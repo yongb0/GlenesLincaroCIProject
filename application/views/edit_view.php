@@ -1,11 +1,13 @@
 <div class="container">
     <div class="row">
           <div class="span4">
-            <h2>User Profile</h2>
+          
 			 
 			<div class="paragraphs">
 			  <div class="row">
 				<div class="span4 profImg">
+                <div class="col-sm-3">
+                  <h2>User Profile</h2>
 				<?php
 					$profile_image = $image;
 					if($profile_image==NULL)
@@ -16,14 +18,23 @@
                 <?php echo img(array('src' => $img, 'alt'=> 'alt information', 'class' => 'img-thumbnail' )); ?>
 				  <div class="ChImg">
 					<?php 
-						
-						/* echo $this->Form->create('User',array('enctype'=>'multipart/form-data')); 
-							echo $this->Form->input('upload', array('type' => 'file'));
-							echo $this->Form->button('Upload', array('class' => 'btn btn-info') ); 
-						echo $this->Form->end(); */
-				
-					?>
+                        if($upload_error!='') { 
+                            echo '<div class="alert alert-danger">'.$upload_error.'</div>'; 
+                        }
+                    ?>
+                    <form action="<?php echo base_url(); ?>user/edit/<?php echo $id; ?>" enctype="multipart/form-data" id="UserEditForm uploadForm" method="post" accept-charset="utf-8">
+                        <div style="display:none;">
+                            <input type="hidden" name="_method" value="PUT">
+                        </div>
+                        <div class="input file required">
+                        <label for="UserUpload">Upload</label>
+                        <input type="file" name="img" id="UserUpload pdffile" required="required" style="margin-bottom:20px;"></div>
+                        <button class="btn btn-info" type="submit">Upload</button>
+                    </form>
+                    
 				  </div>
+                </div>
+                <div class="col-sm-8">
 				  <div class="content-heading userInfo">
 						<div style="width:45%! important;">
 						
@@ -44,9 +55,10 @@
                                 
                                 <div class="input text" style="position:relative">
                                      <label for="birthDate">Gender</label><br />
-                                    <input type="hidden" name="gender" id="UserGender_" value=""><input type="radio" name="gender" id="UserGenderM" value="m">
+                                    <input type="hidden" name="gender" id="UserGender_" value="">
+                                    <input type="radio" name="gender" id="UserGenderM" value="m"<?php echo ($gender=='m')?'checked':'' ?>>
                                     <label for="UserGenderM">Male</label>
-                                    <input type="radio" name="gender" id="UserGenderF" value="f">
+                                    <input type="radio" name="gender" id="UserGenderF" value="f"<?php echo ($gender=='f')?'checked':'' ?>>
                                     <label for="UserGenderF">Female</label>
                                 </div>
                                 <div class="input textarea">
@@ -60,6 +72,7 @@
 						</div>
 					
 				  </div>
+                 </div>
 				 
 				</div>
 			  </div>

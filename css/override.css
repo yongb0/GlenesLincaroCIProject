@@ -160,3 +160,12 @@ button.Zebra_DatePicker_Icon {
     top: 35px! important;
     right: 20px! important;
 }
+
+.img-thumbnail {
+    padding: 12px;
+    margin-bottom:15px;
+}
+
+.col-sm-3{
+   border-right: 1px solid #C3C0C0;
+}

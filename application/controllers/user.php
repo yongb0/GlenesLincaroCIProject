@@ -109,9 +109,17 @@ class User extends CI_Controller{
     public function edit($id = null) {
         $this->load->library('form_validation');
         $this->load->helper('html');
+        
+        $error = '';
+        //die('xxxxxxxxxxxx');
          
         if ($id==null) {
-            redirect($this->profile());
+            redirect('user/profile');
+        }
+        
+        //you can't edit if it is not your profile.
+        if ($this->session->userdata('user_id') != $id) {
+             redirect('user/profile');
         }
         
         if ($this->session->userdata('logged_in') == true) {
@@ -119,25 +127,92 @@ class User extends CI_Controller{
         }
         
         if ($this->input->post()) {
-    
+            
             $this->form_validation->set_rules('name', 'User Name', 'trim|required|min_length[5]| max_length[20]|xss_clean');
            
             if ($this->form_validation->run() == FALSE) {
                  
             } else {
                 $this->user_model->edit_user($this->session->userdata('user_id'));
-                //$this->thank();
-                $this->profile();
+                redirect('user/profile');
             }
-        } else {
-             $data['title'] = 'Edit Info';
-            $this->load->view('header_view',$data);
-            $this->load->view('edit_view.php', $data);
-            $this->load->view('footer_view',$data);
+            $user_id = $this->session->userdata('user_id');
+            if ($this->input->post('_method') == 'PUT') {
+            
+                list($txt, $ext) = explode('.',$_FILES['img']['name']);
+                $newImageName = time().'.'.$ext;
+                
+                $config = array(
+                        'upload_path' => "images/avatar",
+                        'allowed_types' => "gif|jpg|png|jpeg|pdf",
+                        'overwrite' => TRUE,
+                        'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
+                        'max_height' => "768",
+                        'max_width' => "1024",
+                        'file_name' => $newImageName
+                    );
+                $this->load->library('upload', $config);
+                
+                if($this->upload->do_upload('img'))
+                {
+                    $this->user_model->add_image($user_id, $newImageName);
+                    redirect('user/profile');
+                }
+                else
+                {
+                    $error = $this->upload->display_errors();
+                }
+            }
         }
+        $data['upload_error'] = $error;
+        $data['title'] = 'Edit Info';
+        $this->load->view('header_view',$data);
+        $this->load->view('edit_view.php', $data);
+        $this->load->view('footer_view',$data);
+        
         
        
     }
+    
+    public function do_upload($user_id){
+        $this->load->helper('html');
+       
+        if ($this->input->post('_method') == 'PUT') {
+            
+            list($txt, $ext) = explode('.',$_FILES['img']['name']);
+            $newImageName = time().'.'.$ext;
+            
+            $config = array(
+                    'upload_path' => "images/avatar",
+                    'allowed_types' => "gif|jpg|png|jpeg|pdf",
+                    'overwrite' => TRUE,
+                    'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
+                    'max_height' => "768",
+                    'max_width' => "1024",
+                    'file_name' => $newImageName
+                );
+            $this->load->library('upload', $config);
+            
+            if($this->upload->do_upload('img'))
+            {
+                $this->user_model->add_image($user_id, $newImageName);
+                /* $data = array('upload_data' => $this->upload->data());
+                $this->load->view('upload_success',$data); */
+                redirect('user/profile');
+            }
+            else
+            {
+                $error = $this->upload->display_errors();
+            }
+        }
+            //die('form not submitted');
+            $data['upload_error'] = $error;
+            $this->load->view('header_view',$data);
+            $this->load->view('edit_view.php', $data);
+            $this->load->view('footer_view',$data);
+        
+    }
+ 
     
     public function logout()
     {
