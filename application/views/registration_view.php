@@ -6,11 +6,11 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <div class="panel-title">Sign Up</div>
-                            <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide(); $('#loginbox').show()">Sign In</a></div>
+                            <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="login">Sign In</a></div>
                         </div>  
                         <div class="panel-body" >
                            <?php echo validation_errors('<p class="error">'); ?>
-							<?php echo form_open("user/registration", array('class' => 'form-horizontal', 'role' => 'form')); ?>
+							<?php echo form_open("user/register", array('class' => 'form-horizontal', 'role' => 'form')); ?>
                                 
                                 <div id="signupalert" style="display:none" class="alert alert-danger">
                                     <p>Error:</p>
@@ -29,7 +29,7 @@
 								<div class="form-group">
                                     <label for="email" class="col-md-3 control-label">Name</label>
                                     <div class="col-md-9">
-                                       <input type="text" id="name" name="name" class="form-control" value="<?php echo set_value('user_name'); ?>" placeholder="Name"/>
+                                       <input type="text" id="name" name="name" class="form-control" value="<?php echo set_value('name'); ?>" placeholder="Name"/>
                                     </div>
                                 </div>
                                     
