@@ -45,7 +45,7 @@ class Message_model extends CI_Model {
       
     }
     
-    public function get_message_details($my_id, $to_id, $offset=0, $limit=4){
+    public function get_message_details($my_id, $to_id, $offset=0, $limit=5){
         
         $sql = '
                 SELECT m.to_id, m.from_id, m.content, m.created, q.name, q.image
@@ -69,8 +69,30 @@ class Message_model extends CI_Model {
         ';
         
         $query = $this->db->query($sql);
-    
         return array_reverse($query->result_array(), true);
+    }
+    
+    public function get_message_count($my_id, $to_id){
+        
+        $sql = '
+                SELECT m.to_id, m.from_id, m.content, m.created, q.name, q.image
+                  FROM 
+                    (
+                      SELECT msg.to_id, msg.from_id, msg.created, user.name, user.image
+                        FROM messages msg 
+                        LEFT JOIN user ON user.id = msg.from_id
+                        WHERE 
+                        (to_id = '.$to_id.' OR from_id = '.$to_id.') AND (to_id = '.$my_id.' OR from_id = '.$my_id.')
+                        GROUP BY to_id, from_id
+                        
+                    ) q JOIN messages m
+                        ON q.to_id = m.to_id
+                        AND q.from_id = m.from_id
+                        ORDER BY created DESC
+        ';
+        
+        $query = $this->db->query($sql);
+        return count($query->result_array());
     }
     
     public function add_reply($to_id, $from_id, $reply) {
@@ -92,6 +114,11 @@ class Message_model extends CI_Model {
                ';
                
         $query = $this->db->query($sql);
+    }
+    
+    public function get_more($my_id, $to_id, $offset, $limit) {
+        $return_array = $this->get_message_details($my_id, $to_id, $offset, $limit);
+        return $return_array;
     }
     
 }

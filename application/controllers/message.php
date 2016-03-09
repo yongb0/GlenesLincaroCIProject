@@ -70,12 +70,14 @@ class Message extends CI_Controller{
             }
             
             $message_details = $this->message_model->get_message_details($my_id, $to_id);
+            $message_count = $this->message_model->get_message_count($my_id, $to_id);
             $to_info = $this->user_model->get_user_info($to_id);
             
             $data['to_name'] = $to_info['name'];
             
             $data['to_id'] = $to_info['id'];
             $data['message_info'] = $message_details;
+            $data['message_count'] = $message_count;
             $data['recipient_ids'] = $recip;
             $data['my_id'] = $my_id;
             $data['title']= 'Message List';
@@ -99,6 +101,68 @@ class Message extends CI_Controller{
         }
         
         return $recip;
+    }
+    
+    public function loadmore() {
+        
+      if ($this->session->userdata('logged_in') == true) {
+          $limit = $this->input->post('limit');
+          $offset = $this->input->post('offset');
+          $to_id = $this->input->post('to_id');
+          $my_id = $this->session->userdata('user_id');
+           
+          $this->load->model('message_model');
+          $message_info  = $this->message_model->get_more($my_id, $to_id, $offset, $limit);
+          $html = '';
+           foreach ($message_info as $msg) {
+               $image = $msg['image'];
+               if ($image!='') {
+                    $img = base_url().'images/avatar/'.$image;
+                } else {
+                    $img = base_url().'images/default-profile.png';
+                }
+                
+                //$timespan = timespan(strtotime($msg['created']), time()) . ' ago';
+                $timespan = date('m-d-Y',strtotime($msg['created']));
+               
+               if ($msg['from_id'] == $my_id) {
+                   
+                   
+                   $html .= '<div class="row msg_container base_sent">
+                        <div class="col-md-10 col-xs-10" style="position:relative">
+                            <div class="messages msg_sent">
+                                <p>'.$msg['content'].'</p>
+                                <div class="timeSent">'.$timespan.'</div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-xs-2 avatar">
+                        </div>
+                    </div>';
+               
+                } else {
+                   
+                    $html .= '<div class="row msg_container base_receive">
+                        <div class="col-md-2 col-xs-2 avatar">
+                            <img src="'.$img.'" class=" img-responsive ">
+                        </div>
+                        <div class="col-md-10 col-xs-10" style="position:relative">
+                            <div class="messages msg_receive">
+                                <p>'.$msg['content'].'</p>
+                                <div class="timeSent">'.$timespan.'</div>
+                            </div>
+                        </div>
+                    </div>';
+              
+               
+               }
+          }
+          
+          $data['view'] = $html;
+          $data['offset'] =$offset +5;
+          $data['limit'] =$limit;
+      }
+      
+      echo json_encode($data);
     }
    
     

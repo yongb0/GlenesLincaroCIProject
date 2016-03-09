@@ -53,7 +53,14 @@
 							</div>
                                 
 							<div class="panel-body msg_container_base">
-                            
+                                <?php if ($message_count > 5) { ?>
+                                    <a href="javascript:void(0);" onClick="showMore();" style="text-decoration:underline;">Show more</a>
+                                <?php } ?>
+                                
+                                <input type="hidden" name="limit" id="limit" value="5"/>
+                                <input type="hidden" name="offset" id="offset" value="5"/>
+                                <input type="hidden" name="to_id" id="to_id" value="<?php echo $to_id; ?>"/>
+                                <div id="rezult"></div>
 								
                                 <?php
                                 foreach ($message_info as $msg) {
@@ -123,4 +130,23 @@
     
 	</div>
 </div>
+<script type="text/javascript">
+    function showMore(){
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>message/loadmore',
+            dataType: 'json',
+            data:{
+                offset : jQuery('#offset').val(), 
+                limit : jQuery('#limit').val(),
+                to_id : jQuery('#to_id').val()
+                },
+            success :function(data){
+                jQuery('#rezult').after(data.view);
+                jQuery('#offset').val(data.offset);
+                jQuery('#limit').val(data.limit);
+            }
+        });
+    }
+</script>
 	
