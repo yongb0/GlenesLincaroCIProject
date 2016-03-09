@@ -238,3 +238,10 @@ button.Zebra_DatePicker_Icon {
     font-size: 11px;
     color: #6F6F6F;
 }
+.delConversation{
+   font-size: 12px;
+    text-decoration: underline;
+    width: 116px;
+    /* height: 18px; */
+    float: right;
+}

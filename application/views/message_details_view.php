@@ -49,8 +49,11 @@
 									<a href="#"><span id="minim_chat_window" class="glyphicon glyphicon-minus icon_minim"></span></a>
 									<a href="#"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
 								</div> -->
+                                <div class="delConversation"><?php echo anchor('message/remove/'.$to_id, 'Delete Conversation'); ?></div>
 							</div>
+                                
 							<div class="panel-body msg_container_base">
+                            
 								
                                 <?php
                                 foreach ($message_info as $msg) {
@@ -67,6 +70,20 @@
                                    if ($msg['from_id'] == $my_id) {
                                        ?>
                                        
+                                       <div class="row msg_container base_sent">
+                                            <div class="col-md-10 col-xs-10" style="position:relative">
+                                                <div class="messages msg_sent">
+                                                    <p><?php echo $msg['content']; ?></p>
+                                                    <div class="timeSent"><?php echo $timespan; ?></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-xs-2 avatar">
+                                                <!--<img src="<?php echo $img; ?>" class=" img-responsive ">-->
+                                            </div>
+                                        </div>
+                                   
+                                  <?php } else { ?>
+                                       
                                         <div class="row msg_container base_receive">
                                             <div class="col-md-2 col-xs-2 avatar">
                                                 <img src="<?php echo $img; ?>" class=" img-responsive ">
@@ -78,23 +95,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                   
-                                  <?php } else { ?>
-                                       
-                                       
-                                        
-                                        <div class="row msg_container base_sent">
-                                            <div class="col-md-10 col-xs-10" style="position:relative">
-                                                <div class="messages msg_sent">
-                                                    <p><?php echo $msg['content']; ?></p>
-                                                    <div class="timeSent"><?php echo $timespan; ?></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2 col-xs-2 avatar">
-                                                <!--<img src="<?php echo $img; ?>" class=" img-responsive ">-->
-                                            </div>
-                                        </div>
-                                        
                                    <?php
                                    
                                    }

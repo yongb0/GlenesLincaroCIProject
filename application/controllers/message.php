@@ -29,6 +29,18 @@ class Message extends CI_Controller{
         $this->load->view('footer_view',$data);
     }
     
+    public function remove($to_id){
+        
+        if ($this->session->userdata('logged_in') == true) {
+            $my_id = $this->session->userdata('user_id');
+            
+            $this->message_model->msg_delete($my_id, $to_id);
+            redirect('message/home');
+        } else {
+            redirect('user/login');
+        }
+    }
+    
     public function home() {
         
         $my_id = $this->session->userdata('user_id');
@@ -43,7 +55,7 @@ class Message extends CI_Controller{
         
     }
     
-    public function details($to_id){
+    public function details($to_id) {
         
         if ($this->session->userdata('logged_in') == true) {
         
@@ -61,6 +73,7 @@ class Message extends CI_Controller{
             $to_info = $this->user_model->get_user_info($to_id);
             
             $data['to_name'] = $to_info['name'];
+            
             $data['to_id'] = $to_info['id'];
             $data['message_info'] = $message_details;
             $data['recipient_ids'] = $recip;
@@ -76,12 +89,12 @@ class Message extends CI_Controller{
         
     }
     
-    public function get_sidebar_list($my_id){
+    public function get_sidebar_list($my_id) {
         
-        $my_recipients_id = $this->message_model->get_my_recipients($my_id);
+        $recipients_or_sender_id = $this->message_model->get_sender_recipient_id($my_id);
         $recip = array();
-        foreach ($my_recipients_id as $row) {
-            $recip[] = $this->user_model->get_user_info($row['to_id']);
+        foreach ($recipients_or_sender_id as $row) {
+            $recip[] = $this->user_model->get_user_info($row['id']);
             
         }
         
