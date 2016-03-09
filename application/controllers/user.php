@@ -9,7 +9,8 @@ class User extends CI_Controller{
     {
         if(($this->session->userdata('user_name')!=""))
         {
-            $this->welcome();
+            //$this->welcome();
+            redirect('message/home');
         }
         else{
             $this->login();
@@ -35,7 +36,8 @@ class User extends CI_Controller{
 
             $result=$this->user_model->login($email,$password);
             if ($result) {
-                $this->welcome();
+                //$this->welcome();
+                redirect('message/home');
             } else {      
                 //$this->index();
                     $data['error']= 'Invalid username or password.';
@@ -48,7 +50,7 @@ class User extends CI_Controller{
         $this->load->view('footer_view',$data);
         
         if ($this->session->userdata('logged_in') == true) {
-            redirect($this->welcome);
+            redirect('message/home');
         }
   
     }
@@ -73,7 +75,7 @@ class User extends CI_Controller{
         }
     
     if ($this->session->userdata('logged_in') == true) {
-        redirect($this->welcome);
+        redirect('message/home');
     }
         
         $data['title']= 'Sign Up';
