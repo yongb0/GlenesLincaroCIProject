@@ -45,7 +45,7 @@ class Message_model extends CI_Model {
       
     }
     
-    public function get_message_details($my_id, $to_id, $offset=0, $limit=5){
+    public function get_message_details($my_id, $to_id, $offset=0, $limit=5) {
         
         $sql = '
                 SELECT m.to_id, m.from_id, m.content, m.created, q.name, q.image
@@ -72,7 +72,7 @@ class Message_model extends CI_Model {
         return array_reverse($query->result_array(), true);
     }
     
-    public function get_message_count($my_id, $to_id){
+    public function get_message_count($my_id, $to_id) {
         
         $sql = '
                 SELECT m.to_id, m.from_id, m.content, m.created, q.name, q.image
@@ -103,6 +103,20 @@ class Message_model extends CI_Model {
 			'created'=>date('Y-m-d H:i:s')
 			);
 		$this->db->insert('messages',$data);
+        
+        $insert_id = $this->db->insert_id();
+        return $this->get_reply_detail($insert_id);
+    }
+    
+    public function get_reply_detail($id) {
+        $sql = '
+                SELECT from_id, content, created FROM messages 
+                WHERE id = '.$id.' 
+                LIMIT 1
+        ';
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
     }
     
     public function msg_delete($my_id, $to_id) {

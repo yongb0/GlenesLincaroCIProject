@@ -114,12 +114,14 @@
                                    }
                                }
                                 ?>
+                                <div class='reply-html'></div>
 							</div>
                            
 							<div class="panel-footer">
-                                <form action="<?php echo base_url(); ?>message/details/<?php echo $to_id ?>" method="post" accept-charset="utf-8" style="width:100%">
+                                <!--<form action="<?php echo base_url(); ?>message/details/<?php echo $to_id ?>" method="post" accept-charset="utf-8" style="width:100%">-->
+                                <form action="javascript:void(0)" id="replyForm" method="post" accept-charset="utf-8" style="width:100%">
                                     <div class="input-group">
-                                            <input id="btn-input" type="text" name="reply" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                                            <input id="btn-input" type="text" name="reply" class="form-control input-sm chat_input reply-input" placeholder="Write your message here..." />
                                             <span class="input-group-btn">
                                                 <button class="btn btn-primary btn-sm" id="btn-chat">Send</button>
                                             </span>
@@ -183,9 +185,31 @@
             success :function(data){
                 if(data.status == 'success'){
                     jQuery('#popup').bPopup().close();  
+                    jQuery('.panel.panel-default').html();
                     window.location = '<?php echo base_url(); ?>message/home';
                 }else{
                     window.location = '<?php echo base_url(); ?>user/login';
+                }
+            }
+        });
+    });
+    
+    jQuery('#replyForm').submit(function(){
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>message/reply', 
+            dataType: 'json',
+            data:{
+                    to_id : '<?php echo $to_id; ?>',
+                    reply : jQuery('.reply-input').val()
+                },
+            success :function(data){
+                if(data.status == 'success'){
+                   jQuery('.reply-html').after(data.message_html);
+                   jQuery('.reply-input').val('');
+                }else if(data.status == 'error'){
+                   jQuery('.reply-html').after('Message not sent.');
+                   jQuery('.reply-input').val('');
                 }
             }
         });
