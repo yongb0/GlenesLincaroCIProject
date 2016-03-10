@@ -12,7 +12,7 @@ class Message extends CI_Controller{
         // field name, error message, validation rules
         if ($this->input->post()) {
     
-            $this->form_validation->set_rules('content', 'Content', 'trim|required|min_length[5]|xss_clean');
+            $this->form_validation->set_rules('content', 'Content', 'trim|required|min_length[1]|xss_clean');
 
             if ($this->form_validation->run() == FALSE) {
                 //$this->register();
@@ -29,16 +29,17 @@ class Message extends CI_Controller{
         $this->load->view('footer_view',$data);
     }
     
-    public function remove($to_id){
-        
+    public function remove(){
+        $to_id = $this->input->post('to_id');
         if ($this->session->userdata('logged_in') == true) {
             $my_id = $this->session->userdata('user_id');
             
             $this->message_model->msg_delete($my_id, $to_id);
-            redirect('message/home');
+            $return['status'] = 'success';
         } else {
-            redirect('user/login');
+            $return['status'] = 'error';
         }
+         echo json_encode($return);
     }
     
     public function home() {

@@ -16,6 +16,7 @@
         <script type="text/javascript" src="<?php echo base_url();?>js/jquery-migrate-1.2.1.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>js/zebra_datepicker.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>js/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url();?>js/jquery.bpopup.min.js"></script>
         </head>
         <body>
             <div id="wrapper">

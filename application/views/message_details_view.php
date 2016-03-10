@@ -49,7 +49,14 @@
 									<a href="#"><span id="minim_chat_window" class="glyphicon glyphicon-minus icon_minim"></span></a>
 									<a href="#"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
 								</div> -->
-                                <div class="delConversation"><?php echo anchor('message/remove/'.$to_id, 'Delete Conversation'); ?></div>
+                                
+                                <!-- <div class="delConversation"><?php echo anchor('message/remove/'.$to_id, 'Delete Conversation'); ?></div> -->
+                                <div class="delConversation">
+                                    <a href="javascript:void(0)" onClick="delMessage()">
+                                        <span class="glyphicon glyphicon-trash"></span> Delete Conversation
+                                    </a>
+                                </div>
+                                
 							</div>
                                 
 							<div class="panel-body msg_container_base">
@@ -130,6 +137,18 @@
     
 	</div>
 </div>
+
+<div id="popup" style="display: none;">
+    <span class="button b-close"><span>X</span></span>
+       <div class="popHolder">
+            <div class="popMessage">Do you ready want to delete this conversation?</div>
+            <div class="popButtonHolder">
+                    <a href="javascript:void(0)" class="delConv glOk">DELETE</a>  
+                    <a href="javascript:void(0)" class="b-close glCancel">CANCEL</a>
+            </div>
+       </div>
+    <!--<span class="logo">bPopup</span>-->
+</div>
 <script type="text/javascript">
     function showMore(){
         jQuery.ajax({
@@ -148,5 +167,28 @@
             }
         });
     }
+    
+    function delMessage() {
+        jQuery('#popup').bPopup();  
+    }
+    
+    jQuery('.delConv').click(function(){
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>message/remove', 
+            dataType: 'json',
+            data:{
+                to_id : '<?php echo $to_id; ?>'
+                },
+            success :function(data){
+                if(data.status == 'success'){
+                    jQuery('#popup').bPopup().close();  
+                    window.location = '<?php echo base_url(); ?>message/home';
+                }else{
+                    window.location = '<?php echo base_url(); ?>user/login';
+                }
+            }
+        });
+    });
 </script>
 	

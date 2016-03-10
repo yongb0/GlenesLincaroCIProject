@@ -184,8 +184,8 @@ input[type="text"], textarea {
 
 input, textarea{margin-bottom:10px;}
 button.Zebra_DatePicker_Icon {
-    top: 35px! important;
-    right: 20px! important;
+    top: 33px! important;
+    right: 12px! important;
 }
 
 .img-thumbnail {
@@ -240,8 +240,97 @@ button.Zebra_DatePicker_Icon {
 }
 .delConversation{
    font-size: 12px;
-    text-decoration: underline;
-    width: 116px;
+    width: 130px;
     /* height: 18px; */
     float: right;
 }
+
+/****
+    START BPOPUP STYLES
+****/
+
+#popup, .bMulti {
+    background-color: #FFF;
+    border-radius: 10px 10px 10px 10px;
+    box-shadow: 0 0 25px 5px #999;
+    color: #111;
+    display: none;
+    min-width: 450px;
+    min-height: 180px;
+    padding: 25px;
+}
+
+#popup .logo {
+    color: #2B91AF;
+    font: bold 325% 'Petrona',sans;
+}
+
+#popup .button.b-close, .button.bClose {
+    border-radius: 7px 7px 7px 7px;
+    box-shadow: none;
+    font: bold 131% sans-serif;
+    padding: 0 6px 2px;
+    position: absolute;
+    right: -7px;
+    top: -7px;
+}
+
+#popup .button {
+    background-color: #F35361;
+    border-radius: 10px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+    color: #FFF;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.popHolder{
+    width:100%;
+}
+.popHolder .popMessage{
+    font-size: 20px;
+    padding: 10px 10px 50px;
+    color: #154B79;
+}
+
+.popHolder .popButtonHolder{
+    /* padding: 10px; */
+    margin: 0 auto;
+    display: block;
+    width: 70%;
+    height: 40px;
+}
+.popHolder .popButtonHolder a {
+    float: left;
+    width: 47%;
+    height: 40px;
+    display: block;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    text-decoration: none;
+}
+.delConversation{
+   
+}
+.glOk{
+   background: #3FA9F5;
+   color:#ffffff;
+    margin-right:10px;
+}
+.glCancel{
+   color:#ffffff;
+   background: #F5BB50;
+    
+}
+.glOk:hover, .glCancel:hover {
+    color:#ffffff;
+    
+}
+/****
+    END BPOPUP STYLES
+****/
