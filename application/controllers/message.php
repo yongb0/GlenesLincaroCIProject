@@ -22,7 +22,11 @@ class Message extends CI_Controller{
                 redirect('message/details/'.$this->input->post('to_id'));
             }
         }
-       
+        
+        $my_id = $this->session->userdata('user_id');
+        $recip = $this->get_sidebar_list($my_id);
+        $data['recipient_ids'] = $recip;
+        
         $data['title']= 'Sign Up';
         $this->load->view('header_view',$data);
         $this->load->view("add_message_view.php", $data);
@@ -63,13 +67,6 @@ class Message extends CI_Controller{
             $my_id = $this->session->userdata('user_id');
             $recip = $this->get_sidebar_list($my_id);
             
-            /* if ($this->input->post()) {
-                if ($to_id != '' && $my_id != '') {
-                    $reply = $this->input->post('reply');
-                    $this->message_model->add_reply($to_id, $my_id, $reply);
-                }
-            } */
-            
             $message_details = $this->message_model->get_message_details($my_id, $to_id);
             $message_count = $this->message_model->get_message_count($my_id, $to_id);
             $to_info = $this->user_model->get_user_info($to_id);
@@ -98,10 +95,8 @@ class Message extends CI_Controller{
         $recip = array();
         
         foreach ($recipients_or_sender_id as $row) {
-            $recip[] = $this->user_model->get_user_info($row['id']);
-            
+            $recip[] = $this->user_model->get_user_info($row['id']);  
         }
-        
         return $recip;
     }
     
