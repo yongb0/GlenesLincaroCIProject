@@ -184,6 +184,35 @@ class User extends CI_Controller{
             
             if($this->upload->do_upload('img'))
             {
+              
+                /* $this->load->library('image_lib');
+                $config2['image_library'] = 'gd2';
+                $config2['source_image'] = $this->upload->upload_path.$this->upload->file_name;
+                $config2['new_image'] = 'images/thumbs';
+                $config2['maintain_ratio'] = FALSE;
+                $config2['create_thumb'] = TRUE;
+                $config2['thumb_marker'] = '_thumb';
+                $config2['width'] = 200;
+                $config2['height'] = 200;
+             
+                $this->image_lib->initialize($config2);
+                $this->image_lib->resize();
+                
+                $conf_new = array(
+                    'image_library' => 'gd2',
+                    'source_image' => $this->upload->upload_path.$this->upload->file_name,
+                    'create_thumb' => FALSE,
+                    'maintain_ratio' => FALSE,
+                    'width' => 200,
+                    'height' => 200,
+                    'x_axis' => 0,
+                    'y_axis' => 0
+                );
+
+                if (!$this->image_lib->resize()){
+                    $this->session->set_flashdata('errors', $this->image_lib->display_errors('', ''));   
+                 } */
+
                 $this->user_model->add_image($user_id, $newImageName);
                 return false;
             }
