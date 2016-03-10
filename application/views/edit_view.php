@@ -39,7 +39,11 @@
 						<div style="width:45%! important;">
 						
                             <?php echo form_open("user/edit/".$id); ?>
-                        
+                            <?php
+                                if ($birthdate=='0000-00-00') {
+                                    $birthdate = '';
+                                }
+                            ?>
                             
                             <fieldset>
                                <div class="input text required">
@@ -50,7 +54,7 @@
                                <div class="input text" style="position:relative">
                                     <label for="birthDate">Birthdate</label>
                                     <input name="birthdate" id="birthDate" type="text" value="<?php echo $birthdate; ?>">
-                                    <button type="button" class="Zebra_DatePicker_Icon">Pick a date</button>
+                                   
                                 </div>
                                 
                                 <div class="input text" style="position:relative">
@@ -80,14 +84,14 @@
            </div>
         </div><!-- @end .row -->
 </div>
-	
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	
+
 	//enable datepicker
 	jQuery("#birthDate").Zebra_DatePicker({
-		format: 'Y-m-d'
+         format: 'Y-m-d',
+         view: 'years',
+         direction: -3000
 	});
-	 
 });
 </script>
