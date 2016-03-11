@@ -27,9 +27,9 @@
                         <div style="display:none;">
                             <input type="hidden" name="_method" value="PUT">
                         </div>
-                         Upload profile<br /><br />
-                        <input type="file" id="image" name="image" style="width:200px; height:30px; background-color:#FFFFFF;" /><br /><br />
-                        <input type="submit" value="submit" style="width:85px; height:25px;" />
+                         Upload profile<br />
+                        <input type="file" id="image" name="image" required="required" style="width:200px;padding: 5px 0 5px 5px;border: 1px solid #D8D2D2;border-radius: 5px;" />
+                        <input type="submit" value="Upload" class="btn btn-info" style="width:85px;" />
                     </form>
                     
 				  </div>
