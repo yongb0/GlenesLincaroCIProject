@@ -114,7 +114,7 @@ class User extends CI_Controller{
         
         $error = '';
         //die('xxxxxxxxxxxx');
-         
+        
         if ($id==null) {
             redirect('user/profile');
         }
@@ -127,7 +127,12 @@ class User extends CI_Controller{
         if ($this->session->userdata('logged_in') == true) {
             $data = $this->user_model->get_user_info($this->session->userdata('user_id'));
         }
-       
+        
+        $data['msg'] = '';
+        $data['imgSrc'] = '';
+        $data['displayname'] = '';
+        $data['upload_error'] = '';
+        
         if ($this->input->post()) {
             
             $this->form_validation->set_rules('name', 'User Name', 'trim|required|min_length[5]| max_length[20]|xss_clean');
@@ -140,14 +145,36 @@ class User extends CI_Controller{
             }
             $user_id = $this->session->userdata('user_id');
            
-            if ($this->input->post('_method') == 'PUT') {
-                $upload_fail = $this->profile_upload_fail($user_id);
-                if ($upload_fail == false ) {
-                    redirect('user/profile');
-                } else {
-                    $error = $upload_fail;
+            if ($this->input->post()) {
+                /* if(isset($_POST)){
+                        print_r($_POST);
+                        die;
+                } */
+                $upload = $this->profile_upload($user_id, $_FILES, $_POST);
+                if ($upload != false ) {
+                    //redirect('user/profile');
+                 /*   print_r($upload);
+                   die; */
+                    $data['msg'] = $upload['msg'];
+                    $data['imgSrc'] =  $upload['imgSrc'];
+                    $data['displayname'] = $upload['displayname'];
                     
+                    if (isset($upload['upload_error'])) {
+                        $error = $upload['upload_error'];
+                    }
+                
+                } else {
+                    $error = $this->upload->display_errors();
+                    //die($error);
                 }
+               
+                $data['upload_error'] = $error;
+                $data['title'] = 'Edit Info';
+                $this->load->view('header_view',$data);
+                $this->load->view('edit_view.php', $data);
+                $this->load->view('footer_view',$data);
+                
+                return;
             }
             
             
@@ -155,6 +182,9 @@ class User extends CI_Controller{
        
         $data['upload_error'] = $error;
         $data['title'] = 'Edit Info';
+       /*  print_r($data);
+        die; */
+        
         $this->load->view('header_view',$data);
         $this->load->view('edit_view.php', $data);
         $this->load->view('footer_view',$data);
@@ -166,13 +196,26 @@ class User extends CI_Controller{
     /*
     Return upload error message if it fails
     */
-    public function profile_upload_fail($user_id){
+    public function profile_upload($user_id, $file, $post){
             
-            list($txt, $ext) = explode('.',$_FILES['img']['name']);
+            $profile_id = 12345;
+
+        /***********************************************************
+            0 - Remove The Temp image if it exists
+        ***********************************************************/
+        if (!isset($post['x']) && !isset($file['image']['name']) ){
+            //Delete users temp image
+                $temppath = 'images/'.$profile_id.'_temp.jpeg';
+                if (file_exists ($temppath)){ @unlink($temppath); }
+        } 
+
+        if (isset($file['image']['name'])) {
+
+            list($txt, $ext) = explode('.', $file['image']['name']);
             $newImageName = time().'.'.$ext;
             
             $config = array(
-                    'upload_path' => "images/avatar",
+                    'upload_path' => "images",
                     'allowed_types' => "gif|jpg|png|jpeg|pdf",
                     'overwrite' => TRUE,
                     'max_size' => "2048000", // Can be set to particular file size , here it is 2 MB(2048 Kb)
@@ -182,48 +225,77 @@ class User extends CI_Controller{
                 );
             $this->load->library('upload', $config);
             
-            if($this->upload->do_upload('img'))
-            {
-              
+            if ($this->upload->do_upload('image')) {   
+                 $imgSrc = $this->upload->file_name; 
+               
+            } else {
+                $data['upload_error'] = $this->upload->display_errors();
+            }                
+        }//ADD Image 	
+
+        /***********************************************************
+            3- Cropping & Converting The Image To Jpg
+        ***********************************************************/
+            
+        if (isset($post['x'])){
+            //die('xxxxxxxxxxxxxxx');
+            //the file type posted
+                $type = $post['type'];	
+            //the image src
+                $src = $post['src'];	
+                //die($src);
+                $finalname = time();	
+            
                 $this->load->library('image_lib');
                 $config2['image_library'] = 'gd2';
-                $config2['source_image'] = $this->upload->upload_path.$this->upload->file_name;
-                $config2['new_image'] = 'images/thumbs';
+                $config2['source_image'] = $_SERVER['DOCUMENT_ROOT'].'GlenesLincaroCIProject/images/'.$src;
+                $config2['new_image'] = 'images/avatar';
                 $config2['maintain_ratio'] = FALSE;
                 $config2['create_thumb'] = TRUE;
+                $config2['quality'] = 90;
                 $config2['thumb_marker'] = '_thumb';
-                $config2['width'] = 200;
-                $config2['height'] = 200;
-             
+                $config2['width'] = $post['w'];
+                $config2['height'] = $post['h'];
+                $config2['x_axis'] = $post['x'];
+                $config2['y_axis'] = $post['y'];
+         
+               
                 $this->image_lib->initialize($config2);
                 $this->image_lib->resize();
                 
-                $conf_new = array(
-                    'image_library' => 'gd2',
-                    'source_image' => $this->upload->upload_path.$this->upload->file_name,
-                    'create_thumb' => FALSE,
-                    'maintain_ratio' => FALSE,
-                    'width' => 200,
-                    'height' => 200,
-                    'x_axis' => 0,
-                    'y_axis' => 0
-                );
-
-                if (!$this->image_lib->resize()){
-                    $this->session->set_flashdata('errors', $this->image_lib->display_errors('', ''));   
-                 }
-
-                $this->user_model->add_image($user_id, $newImageName);
-                return false;
-            }
-            else
-            {
-            
-                $error = $this->upload->display_errors();
+                $this->image_lib->clear();
                 
-            }
+                
+                $this->image_lib->initialize($config2); 
+                $this->image_lib->crop();
+
+                 if ($this->image_lib->crop()){
+                    list($txt, $ext) = explode('.', $src);
+                    $new_name = $txt.'_thumb.'.$ext;
+                    $temppath = 'images/'.$src;
+                    if (file_exists ($temppath)) 
+                    { 
+                        @unlink($temppath); 
+                    }
+                    $this->user_model->add_image($user_id, $new_name);
+                    redirect('user/profile');
+                 }else{
+                    die($this->image_lib->display_errors('', ''));   
+                 }
+                                                              
+        }// post x
+        $data['msg'] = '';
+        $data['imgSrc'] = '';
+        $data['displayname'] = '';
+        
+        if(isset($msg))
+            $data['msg'] = $msg;
+        if(isset($imgSrc))
+            $data['imgSrc'] = $imgSrc;
+        if(isset($displayname))
+            $data['displayname'] = $displayname;
        
-        return $error;
+        return $data;
         
     }
  

@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>css/override.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>css/zebra_datepicker.css"/>
         <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>css/jquery-ui.min.css"/>
+        <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/jquery.Jcrop.css" />
 
         <!-- <script type="text/javascript" href="<?php echo base_url();?>js/jquery-1.12.1.js"></script> -->
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -17,6 +18,7 @@
         <script type="text/javascript" src="<?php echo base_url();?>js/zebra_datepicker.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url();?>js/jquery.bpopup.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.Jcrop.min.js"></script>
         </head>
         <body>
             <div id="wrapper">

@@ -1,3 +1,4 @@
+<div id="Overlay" style=" width:100%; height:100%; background-color:rgba(0,0,0,.5); border:0px #990000 solid; position:absolute; top:0px; left:0px; z-index:2000; display:none;"></div>
 <div class="container">
     <div class="row">
           <div class="span4">
@@ -26,10 +27,9 @@
                         <div style="display:none;">
                             <input type="hidden" name="_method" value="PUT">
                         </div>
-                        <div class="input file required">
-                        <label for="UserUpload">Upload</label>
-                        <input type="file" name="img" id="UserUpload pdffile" required="required" style="margin-bottom:20px;"></div>
-                        <button class="btn btn-info" type="submit">Upload</button>
+                         Upload something<br /><br />
+                        <input type="file" id="image" name="image" style="width:200px; height:30px; background-color:#FFFFFF;" /><br /><br />
+                        <input type="submit" value="submit" style="width:85px; height:25px;" />
                     </form>
                     
 				  </div>
@@ -83,7 +83,50 @@
 			</div>
            </div>
         </div><!-- @end .row -->
+        
+        <?php  if($imgSrc!=''){ //if an image has been uploaded display cropping area?>
+            <script>
+                jQuery('#Overlay').show();
+                jQuery('#formExample').hide();
+            </script>
+            <div id="CroppingContainer" style="width:800px; max-height:600px; background-color:#FFF; position:relative; overflow:hidden; border:2px #666 solid; margin:50px auto; z-index:2001; padding-bottom:0px;">  
+            
+                <div id="CroppingArea" style="width:500px; max-height:400px; position:relative; overflow:hidden; margin:40px 0px 40px 40px; border:2px #666 solid; float:left;">	
+                    <img src="<?php echo base_url().'images/'.$imgSrc; ?>" border="0" id="jcrop_target" style="border:0px #990000 solid; position:relative; margin:0px 0px 0px 0px; padding:0px; " />
+                </div>  
+                <div id="InfoArea" style="width:180px; height:150px; position:relative; overflow:hidden; margin:40px 0px 0px 40px; border:0px #666 solid; float:left;">	
+                   <p style="margin:0px; padding:0px; color:#444; font-size:18px;">          
+                        <b>Crop Profile Image</b><br /><br />
+                        <span style="font-size:14px;">
+                            Using this tool crop / resize your uploaded profile image. <br />
+                            Once you are happy with your profile image then please click save.
+                        </span>
+                   </p>
+                </div>  
+                <br />
+                    <div id="CropImageForm" style="width:100px; height:30px; float:left; margin:10px 0px 0px 40px;" >  
+                        <form action="<?php echo base_url(); ?>user/edit/<?php echo $id; ?>" method="post" onsubmit="return checkCoords();">
+                            <input type="hidden" id="x" name="x" />
+                            <input type="hidden" id="y" name="y" />
+                            <input type="hidden" id="w" name="w" />
+                            <input type="hidden" id="h" name="h" />
+                            <input type="hidden" value="jpeg" name="type" /> <?php // $type ?> 
+                            <input type="hidden" value="<?php echo $imgSrc; ?>" name="src" /> <!-- <input type="hidden" value="<?php echo $src; ?>" name="src" /> -->
+                            <input type="submit" value="Crop Image" style="width:100px; height:30px;"   />
+                        </form>
+                    </div>
+                    <div id="CropImageForm2" style="width:100px; height:30px; float:left; margin:10px 0px 0px 40px;" >  
+                        <form action="<?php echo base_url(); ?>user/edit/<?php echo $id; ?>" method="post" onsubmit="return cancelCrop();">
+                            <input type="submit" value="Cancel Crop" style="width:100px; height:30px;"   />
+                        </form>
+                    </div>            
+                    
+            </div><!-- CroppingContainer -->
+	<?php } ?>
 </div>
+
+
+    
 <script type="text/javascript">
 jQuery(document).ready(function(){
 
@@ -94,4 +137,36 @@ jQuery(document).ready(function(){
          direction: -3000
 	});
 });
+
+jQuery(function(){
+	  
+    jQuery('#jcrop_target').Jcrop({
+      aspectRatio: 1,
+	  setSelect:   [ 200,200,37,49 ],
+      onSelect: updateCoords
+    });
+
+  });
+
+  function updateCoords(c)
+  {
+    jQuery('#x').val(c.x);
+    jQuery('#y').val(c.y);
+    jQuery('#w').val(c.w);
+    jQuery('#h').val(c.h);
+  };
+
+  function checkCoords()
+  {
+    if (parseInt(jQuery('#w').val())) return true;
+    alert('Please select a crop region then press submit.');
+    return false;
+  }; 
+//End JCrop Bits
+
+	function cancelCrop(){
+		//Refresh page				
+		window.location = '<?php echo base_url(); ?>user/edit/<?php echo $id; ?>';
+		return false;
+	}
 </script>
