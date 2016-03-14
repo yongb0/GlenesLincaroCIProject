@@ -146,10 +146,17 @@ class User_model extends CI_Model {
         if found return data
         parameters: $keyword
     */
-    public function GetRow($keyword) {        
-        $this->db->order_by('id', 'DESC');
-        $this->db->like("name", $keyword);
-        return $this->db->get('user')->result_array();
+    public function GetRow($keyword, $current_userid) {        
+        /* $this->db->order_by('id', 'DESC');
+        $this->db->like("username", $keyword);
+        return $this->db->get('user')->result_array()); */
+        
+        $query = $this->db->query("SELECT * FROM user WHERE ( name LIKE '$keyword%' OR email LIKE '$keyword%' OR username LIKE '$keyword%') AND id!='$current_userid'");
+		if ($query->num_rows() > 0) { 
+            return  $query->result_array();
+        }else{
+            return false;
+        }
     }
 }
 ?>

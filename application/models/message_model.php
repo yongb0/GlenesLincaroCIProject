@@ -10,13 +10,18 @@ class Message_model extends CI_Model {
     }
 
 	public function new_message() {
-		$data=array(
-			'to_id' => $this->input->post('to_id'),
-			'from_id'=>$this->input->post('from_id'),
-			'content'=>$this->input->post('content'),
-			'created'=>date('Y-m-d H:i:s')
-			);
-		$this->db->insert('messages',$data);
+		
+        $to_id = $this->input->post('to_id');
+        $from_id = $this->input->post('from_id');
+        $content = $this->input->post('content');
+        
+        $data=array(
+            'to_id' => $to_id,
+            'from_id'=> $from_id,
+            'content'=> $content,
+            'created'=> date('Y-m-d H:i:s')
+            );
+        $this->db->insert('messages',$data);
 	}
     
     public function get_sender_recipient_id($user_id) {
@@ -51,7 +56,7 @@ class Message_model extends CI_Model {
     public function get_message_details($my_id, $to_id, $offset=0, $limit=5) {
         
         $sql = '
-                SELECT m.to_id, m.from_id, m.content, m.created, q.name, q.image
+                SELECT m.id, m.to_id, m.from_id, m.content, m.created, q.name, q.image
                   FROM 
                     (
                       SELECT msg.to_id, msg.from_id, msg.created, user.name, user.image
@@ -113,7 +118,7 @@ class Message_model extends CI_Model {
     
     public function get_reply_detail($id) {
         $sql = '
-                SELECT from_id, content, created FROM messages 
+                SELECT id, from_id, content, created FROM messages 
                 WHERE id = '.$id.' 
                 LIMIT 1
         ';
@@ -131,6 +136,21 @@ class Message_model extends CI_Model {
                ';
                
         $query = $this->db->query($sql);
+    }
+    
+    public function msg_delete_single($id) {
+        
+        if ($id != '') {
+            $sql = '
+                    DELETE FROM messages 
+                    WHERE id = '.$id.'
+                   ';
+                   
+            $query = $this->db->query($sql);
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public function get_more($my_id, $to_id, $offset, $limit) {

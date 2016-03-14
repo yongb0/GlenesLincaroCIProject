@@ -14,7 +14,7 @@ class Message extends CI_Controller {
     /*
         Adds message in db
     */
-    public function add() {
+    public function add() { 
         
         $this->load->library('form_validation');
         // field name, error message, validation rules
@@ -25,9 +25,26 @@ class Message extends CI_Controller {
             if ($this->form_validation->run() == FALSE) {
                 //$this->register();
             } else {
-                $this->message_model->new_message();
-                //$this->thank();
-                redirect('message/details/'.$this->input->post('to_id'));
+                $to_id = $this->input->post('to_id');
+                $from_id = $this->input->post('from_id');
+                $content = $this->input->post('content');
+                $data['content'] = $content;
+                if ($to_id == '') {
+                    $data['error'] = 'Recipient does not exist';
+                }
+                
+                if ($from_id == '') {
+                    $data['error'] = 'Something went wrong.';
+                }
+                
+                if ($content == '') {
+                    $data['error'] = 'Please enter your message';
+                }
+                
+                if ($to_id != '' && $from_id != '' && $content != '') {
+                    $this->message_model->new_message();
+                    redirect('message/details/'.$this->input->post('to_id'));
+                }
             }
         }
         
@@ -35,7 +52,7 @@ class Message extends CI_Controller {
         $recip = $this->get_sidebar_list($my_id);
         $data['recipient_ids'] = $recip;
         
-        $data['title']= 'Sign Up';
+        $data['title']= 'Create new message';
         $this->load->view('header_view',$data);
         $this->load->view("add_message_view.php", $data);
         $this->load->view('footer_view',$data);
@@ -52,6 +69,22 @@ class Message extends CI_Controller {
             
             $this->message_model->msg_delete($my_id, $to_id);
             $return['status'] = 'success';
+        } else {
+            $return['status'] = 'error';
+        }
+         echo json_encode($return);
+    }
+    
+    public function delete_single() {
+        $id = $this->input->post('id');
+        if ($this->session->userdata('logged_in') == true) {
+            $delete_single = $this->message_model->msg_delete_single($id);
+            if ($delete_single != false) {
+               $return['status'] = 'success'; 
+            } else {
+               $return['status'] = 'error';
+            }
+            
         } else {
             $return['status'] = 'error';
         }
@@ -97,7 +130,7 @@ class Message extends CI_Controller {
             $data['message_count'] = $message_count;
             $data['recipient_ids'] = $recip;
             $data['my_id'] = $my_id;
-            $data['title']= 'Message List';
+            $data['title']= 'Message - '.$to_info['name'];
             $this->load->view('header_view',$data);
             $this->load->view("message_details_view.php", $data);
             $this->load->view('footer_view',$data);
@@ -144,11 +177,12 @@ class Message extends CI_Controller {
                 $html = '';
                 if (count($reply_details_array) > 0) {
                     $timespan = date('m-d-Y',strtotime($reply_details_array[0]['created']));
-                    $html .='<div class="row msg_container base_sent">
+                    $html .='<div class="row msg_container base_sent" id="msg_'.$reply_details_array[0]['id'].'">
                         <div class="col-md-10 col-xs-10" style="position:relative">
                             <div class="messages msg_sent">
                                 <p>'.$reply_details_array[0]['content'].'</p>
                                 <div class="timeSent">'.$timespan.'</div>
+                                 <a href="javascript:void(0)" class="msgDel" onClick="del_single_msg('.$reply_details_array[0]['id'].'); ">x</a>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-2 avatar">

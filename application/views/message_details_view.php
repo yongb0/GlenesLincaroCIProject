@@ -84,11 +84,12 @@
                                    if ($msg['from_id'] == $my_id) {
                                        ?>
                                        
-                                       <div class="row msg_container base_sent">
+                                       <div class="row msg_container base_sent" id="msg_<?php echo $msg['id']; ?>">
                                             <div class="col-md-10 col-xs-10" style="position:relative">
                                                 <div class="messages msg_sent">
                                                     <p><?php echo $msg['content']; ?></p>
                                                     <div class="timeSent"><?php echo $timespan; ?></div>
+                                                    <a href="javascript:void(0)" class='msgDel' onClick="del_single_msg(<?php echo $msg['id']; ?>); ">x</a>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 col-xs-2 avatar">
@@ -98,14 +99,15 @@
                                    
                                   <?php } else { ?>
                                        
-                                        <div class="row msg_container base_receive">
+                                        <div class="row msg_container base_receive" id="msg_<?php echo $msg['id']; ?>">
                                             <div class="col-md-2 col-xs-2 avatar">
                                                 <img src="<?php echo $img; ?>" class=" img-responsive ">
                                             </div>
                                             <div class="col-md-10 col-xs-10" style="position:relative">
                                                 <div class="messages msg_receive">
                                                     <p><?php echo $msg['content']; ?></p>
-                                                    <div class="timeSent"><?php echo $timespan; ?></div>
+                                                    <div class="timeSent"> <?php echo $timespan; ?></div>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -172,6 +174,26 @@
     
     function delMessage() {
         jQuery('#popup').bPopup();  
+    }
+     
+    function del_single_msg(msg_id) {
+        
+        //alert(jQuery('#msg_'+msg_id).css('background','yellow'));
+        jQuery.ajax({
+            type: 'POST',
+            url: '<?php echo base_url(); ?>message/delete_single', 
+            dataType: 'json',
+            data:{
+                id : msg_id
+                },
+            success :function(data){
+                if(data.status == 'success'){
+                   jQuery('#msg_'+msg_id).hide();
+                }else{
+                   
+                }
+            }
+        });
     }
     
     jQuery('.delConv').click(function(){

@@ -334,3 +334,23 @@ button.Zebra_DatePicker_Icon {
 /****
     END BPOPUP STYLES
 ****/
+
+#recip-error {
+    color: red;
+}
+.recip-error {
+    border: 1px solid #D44D4D;
+    background: #ECE6D5;
+}
+.msgDel{
+    position: absolute;
+    top: 4px;
+    background: #ffffff;
+    right: 20px;
+    text-decoration: none;
+    padding: 0px 5px 0 5px;
+    line-height: 13px;
+}
+.msgDel:hover{
+    text-decoration:none;
+}

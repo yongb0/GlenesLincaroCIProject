@@ -178,8 +178,6 @@ class User extends CI_Controller {
                 
                 return;
             }
-            
-            
         }
        
         $data['upload_error'] = $error;
@@ -201,7 +199,6 @@ class User extends CI_Controller {
     public function profile_upload($user_id, $file, $post) {
             
             $profile_id = 12345;
-
         /***********************************************************
             0 - Remove The Temp image if it exists
         ***********************************************************/
@@ -212,7 +209,8 @@ class User extends CI_Controller {
                     @unlink($temppath); 
                 }
         } 
-
+        
+        
         if (isset($file['image']['name'])) {
 
             list($txt, $ext) = explode('.', $file['image']['name']);
@@ -227,15 +225,18 @@ class User extends CI_Controller {
                     'max_width' => "1024",
                     'file_name' => $newImageName
                 );
-            $this->load->library('upload', $config);
             
+            $this->load->library('upload', $config);
+           
             if ($this->upload->do_upload('image')) {   
                  $imgSrc = $this->upload->file_name; 
                
             } else {
                 $data['upload_error'] = $this->upload->display_errors();
             }                
-        }//ADD Image 	
+        } 
+            
+      
 
         /***********************************************************
             3- Cropping & Converting The Image To Jpg
@@ -351,9 +352,26 @@ class User extends CI_Controller {
         if user found returns userdata
     */
     public function search_user() {
-        $keyword=$this->input->post('keyword');
-        $data=$this->user_model->GetRow($keyword);        
-        echo json_encode($data);
+        if ($this->session->userdata('logged_in') == true) {
+            $current_userid = $this->session->userdata('user_id');
+        }
+        $keyword = $this->input->post('keyword');
+        $users = $this->user_model->GetRow($keyword, $current_userid);
+        
+        if ($users != false) { 
+            $data = array();
+            $data['status'] = 'success';
+            $data['res'] = $users;
+            //print_r($data);
+            echo json_encode($data);
+        } else {
+            $data['status'] = 'error';
+            $data['msg'] = 'Not found';
+             //print_r($data);
+            echo json_encode($data);
+        }
+        
+            
     }
     
     
