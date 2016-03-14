@@ -2,7 +2,6 @@
     <div class="row">
           <div class="span4">
             <h2>Message List</h2>
-			 
 			  <div class="row">
 					<div class="col-md-2">
 					<div class="profile-sidebar">
@@ -31,7 +30,13 @@
 								 ?>
                                     <li class="active recip-list">
                                         <?php echo anchor('message/details/'.$r['id'], ' <img src="'.$img.'"/>'.$name); ?>
+                                         <?php 
+                                            if ($r['unread'] > 0) {
+                                                echo '<div class="unread">'.$r['unread'].'</div>';
+                                            }
+                                        ?>
                                     </li>
+                                    
 								<?php } ?>
 							</ul>
 						</div>
@@ -107,10 +112,27 @@
                                                 <div class="messages msg_receive">
                                                     <p><?php echo $msg['content']; ?></p>
                                                     <div class="timeSent"> <?php echo $timespan; ?></div>
-                                                    
+                                                    <a href="javascript:void(0)" class='msgDel' onClick="del_single_msg(<?php echo $msg['id']; ?>); ">x</a>
                                                 </div>
                                             </div>
                                         </div>
+                                        <script type="text/javascript">
+                                            jQuery.ajax({
+                                            type: 'POST',
+                                            url: '<?php echo base_url(); ?>message/set_seen_message', 
+                                            dataType: 'json',
+                                            data:{
+                                                msg_id : '<?php echo $msg['id']; ?>'
+                                                },
+                                            success :function(data){
+                                                if(data.status == 'success'){
+                                                   
+                                                }else{
+                                                   
+                                                }
+                                            }
+                                        });
+                                        </script>
                                    <?php
                                    
                                    }

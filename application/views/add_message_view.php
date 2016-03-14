@@ -31,7 +31,11 @@
                                     <li class="active recip-list">
                                         <!-- <a href="details/<?php echo $r['id']; ?>"> -->
                                         <?php echo anchor('message/details/'.$r['id'], ' <img src="'.$img.'"/>'.$name); ?>
-                                       
+                                        <?php 
+                                            if ($r['unread'] > 0) {
+                                                echo '<div class="unread">'.$r['unread'].'</div>';
+                                            }
+                                        ?>
                                     </li>
 								<?php } ?>
 							</ul>

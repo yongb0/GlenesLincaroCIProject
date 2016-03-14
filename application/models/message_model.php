@@ -19,6 +19,7 @@ class Message_model extends CI_Model {
             'to_id' => $to_id,
             'from_id'=> $from_id,
             'content'=> $content,
+            'seen_sender' => 1,
             'created'=> date('Y-m-d H:i:s')
             );
         $this->db->insert('messages',$data);
@@ -50,7 +51,7 @@ class Message_model extends CI_Model {
       $arr = array_filter(array_map('array_filter', $query->result_array()));
 
       return $arr;
-      
+     
     }
     
     public function get_message_details($my_id, $to_id, $offset=0, $limit=5) {
@@ -108,6 +109,7 @@ class Message_model extends CI_Model {
 			'to_id' => $to_id,
 			'from_id'=> $from_id,
             'content'=> $reply,
+            'seen_sender' => 1,
 			'created'=>date('Y-m-d H:i:s')
 			);
 		$this->db->insert('messages',$data);
@@ -156,6 +158,47 @@ class Message_model extends CI_Model {
     public function get_more($my_id, $to_id, $offset, $limit) {
         $return_array = $this->get_message_details($my_id, $to_id, $offset, $limit);
         return $return_array;
+    }
+    
+    public function message_seen($id, $current_id) {
+        $sql = '
+            SELECT to_id FROM messages 
+            WHERE id = '.$id.'
+        ';
+        $query = $this->db->query($sql);
+        if ($query->num_rows() > 0) { 
+         
+            $to_id = $query->result_array()[0]['to_id'];
+            
+            if ($to_id == $current_id) {
+                
+                $updateData=array("seen_recipient" => 1);
+                $this->db->where("id", $id);
+                $this->db->update("messages", $updateData);
+                
+            }
+        }
+    }
+    
+    public function count_unread_messages($to_id, $my_id) {
+        $sql = '
+            SELECT count(seen_recipient) as unread
+            FROM messages
+            WHERE from_id = '.$to_id.'
+            AND to_id = '.$my_id.'
+            AND seen_recipient = 0
+        ';
+        
+        $count = 0;
+        $query = $this->db->query($sql);
+         if ($query->num_rows() > 0) { 
+            foreach ($query->result_array() as $row) {
+                
+                //echo $row['seen_recipient'].'<br />';
+                $count = $count + $row['unread'];
+            }
+            return $count;
+         }
     }
     
 }

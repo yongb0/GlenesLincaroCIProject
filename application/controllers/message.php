@@ -149,11 +149,22 @@ class Message extends CI_Controller {
     */
     public function get_sidebar_list($my_id) {
         
+        if ($this->session->userdata('logged_in') == true) {
+            $my_id = $this->session->userdata('user_id');
+        }
         $recipients_or_sender_id = $this->message_model->get_sender_recipient_id($my_id);
         $recip = array();
         
+        $x = 0;
         foreach ($recipients_or_sender_id as $row) {
-            $recip[] = $this->user_model->get_user_info($row['id']);  
+            $recip[] = $this->user_model->get_user_info($row['id']); 
+            
+            if ($my_id != $row['id']) {     
+                $recip[$x]['unread'] = $this->message_model->count_unread_messages($row['id'], $my_id);   
+            } else {
+                $recip[$x]['unread'] = 0;
+            }
+            $x++;
         }
         return $recip;
     }
@@ -266,6 +277,18 @@ class Message extends CI_Controller {
       }
       
       echo json_encode($data);
+    }
+    
+    public function set_seen_message() {
+        if ($this->session->userdata('logged_in') == true) {
+            
+            $id = $this->input->post('msg_id');
+            $current_id = $this->session->userdata('user_id');
+            
+            if ($id != '' && $current_id != '') {
+                $this->message_model->message_seen($id, $current_id);
+            }
+        }
     }
    
     

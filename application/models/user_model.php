@@ -51,7 +51,8 @@ class User_model extends CI_Model {
 			'name'=>$this->input->post('name'),
 			'email'=>$this->input->post('email_address'),
 			'password'=>md5($this->input->post('password')),
-			'created'=>date('Y-m-d H:i:s')
+			'created'=>date('Y-m-d H:i:s'),
+            'created_ip'=> $_SERVER['REMOTE_ADDR']
 			);
 		$this->db->insert('user', $data);
         
@@ -68,7 +69,8 @@ class User_model extends CI_Model {
 			'birthdate'=>$this->input->post('birthdate'),
 			'gender'=>$this->input->post('gender'),
 			'hobby'=>$this->input->post('hobby'),
-			'modified'=>date('Y-m-d H:i:s')
+			'modified'=>date('Y-m-d H:i:s'),
+            'modified_ip'=> $_SERVER['REMOTE_ADDR']
 		);
         /* print_r($data);
         die; */
