@@ -1,21 +1,26 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php 
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 class User_model extends CI_Model {
     
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
     }
-	function login($email,$password)
-    {
+	
+    /*
+        Check for users credentials
+        parameter: email, password
+        returns true on success otherwise false
+    */
+    function login($email, $password) {
 		$where = '(email="'.$email.'" OR username="'.$email.'")';
 		$this->db->where($where);
-        $this->db->where("password",$password);
+        $this->db->where("password", $password);
             
-        $query=$this->db->get("user");
-        if($query->num_rows()>0)
-        {
-         	foreach($query->result() as $rows)
-            {
+        $query = $this->db->get("user");
+        if ($query->num_rows() > 0) {
+         	foreach ($query->result() as $rows) {
             	//add all data to session
                 $newdata = array(
                 	   	'user_id' 		=> $rows->id,
@@ -26,26 +31,38 @@ class User_model extends CI_Model {
 			}
 			//update last login time
 			$updateData=array("last_login_time" => date('Y-m-d H:i:s'));
-			$this->db->where("id",$rows->id);
-			$this->db->update("user",$updateData);
+			$this->db->where("id", $rows->id);
+			$this->db->update("user", $updateData);
            
 			$this->session->set_userdata($newdata);
             return true;            
 		}
 		return false;
     }
-	public function add_user() {
-		$data=array(
+	
+    /*
+        Inserts user in database
+        
+    */
+    public function add_user() {
+		
+        $data = array(
 			'username' => $this->input->post('user_name'),
 			'name'=>$this->input->post('name'),
 			'email'=>$this->input->post('email_address'),
 			'password'=>md5($this->input->post('password')),
 			'created'=>date('Y-m-d H:i:s')
 			);
-		$this->db->insert('user',$data);
+		$this->db->insert('user', $data);
+        
 	}
     
-    public function edit_user($user_id){
+    /*
+        Updates user in database
+        parameter: userid
+    */
+    public function edit_user($user_id) {
+        
         $data=array(
 			'name' => $this->input->post('name'),
 			'birthdate'=>$this->input->post('birthdate'),
@@ -59,30 +76,45 @@ class User_model extends CI_Model {
 		$this->db->update("user",$data);
     }
 	
+    /*
+        Checks email if exists in database
+        Returns true if found else false
+    */
 	function email_exists() {
         $email = trim($this->input->post('email_address'));
 		$email = strtolower($email);	
 	
 		$query = $this->db->query('SELECT * FROM user where email="'.$email.'"');
 		
-		if($query->num_rows() > 0)
+		if ($query->num_rows() > 0) {
 			return true;
-		else
+		} else {
 			return false;
+        }
 	}
 	
+    /*
+        Checks username if exists in database
+        Returns true if found else false
+    */
 	function username_exists() {
         $username = trim($this->input->post('user_name'));
 		$username = strtolower($username);	
 	
 		$query = $this->db->query('SELECT * FROM user where username="'.$username.'"');
 		
-		if($query->num_rows() > 0)
+		if ($query->num_rows() > 0) {
 			return true;
-		else
+		} else {
 			return false;
+        }
 	}
 	
+    /*
+        Edit user Retrieves user info in db
+        parameter: user id
+        if found returns data
+    */
 	function get_user_info($user_id) {
 		$query = $this->db->query("SELECT * FROM user WHERE id='$user_id'");
 		if ($query->num_rows() > 0) {
@@ -97,6 +129,10 @@ class User_model extends CI_Model {
 		}
 	}
     
+    /*
+        Adds user image in db
+        parameters: user id,image filename
+    */
     function add_image($user_id, $newImageName) {
         
         $updateData=array("image" => $newImageName);
@@ -105,6 +141,11 @@ class User_model extends CI_Model {
      
     }
     
+    /*
+        Searches data on database
+        if found return data
+        parameters: $keyword
+    */
     public function GetRow($keyword) {        
         $this->db->order_by('id', 'DESC');
         $this->db->like("name", $keyword);

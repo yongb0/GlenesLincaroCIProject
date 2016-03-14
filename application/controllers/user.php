@@ -4,17 +4,18 @@ if ( ! defined('BASEPATH')) {
 }
 
 class User extends CI_Controller {
+    
     public function __construct() {
         parent::__construct();
         $this->load->model('user_model');
     }
+    
     public function index() {
-        if(($this->session->userdata('user_name')!=""))
-        {
+        
+        if (($this->session->userdata('user_name')!="")) {
             //$this->welcome();
             redirect('message/home');
-        }
-        else{
+        } else {
             $this->login();
             /* $data['title']= 'Home';
             $this->load->view('header_view',$data);
@@ -22,28 +23,28 @@ class User extends CI_Controller {
             $this->load->view('footer_view',$data); */
         }
     }
+    
     public function welcome() {
         $data['title']= 'Welcome';
         $this->load->view('header_view', $data);
         $this->load->view('welcome_view.php', $data);
         $this->load->view('footer_view', $data);
     }
+    
     public function login() {
         $this->load->library('form_validation');
-        if($this->input->post()){
+        if ($this->input->post()) {
             $email=$this->input->post('email');
             $password=md5($this->input->post('pass'));
-
             $result=$this->user_model->login($email, $password);
             if ($result) {
                 //$this->welcome();
                 redirect('message/home');
             } else {      
                 //$this->index();
-                    $data['error']= 'Invalid username or password.';
+                $data['error']= 'Invalid username or password.';
             }
-        }
-        
+        }   
         $data['title']= 'Login';
         $this->load->view('header_view', $data);
         $this->load->view('login_view.php', $data);
@@ -52,8 +53,8 @@ class User extends CI_Controller {
         if ($this->session->userdata('logged_in') == true) {
             redirect('message/home');
         }
-  
     }
+    
     public function register() {
         $this->load->library('form_validation');
         // field name, error message, validation rules
@@ -74,15 +75,16 @@ class User extends CI_Controller {
             }
         }
     
-    if ($this->session->userdata('logged_in') == true) {
-        redirect('message/home');
-    }
+        if ($this->session->userdata('logged_in') == true) {
+            redirect('message/home');
+        }
         
         $data['title']= 'Sign Up';
         $this->load->view('header_view', $data);
         $this->load->view("registration_view.php", $data);
         $this->load->view('footer_view', $data);
     }
+    
     public function thank() {
         $data['title']= 'Thank';
         $this->load->view('header_view', $data);
@@ -96,7 +98,6 @@ class User extends CI_Controller {
     public function profile() {
         
         $this->load->helper('html');
-        
         if ($this->session->userdata('logged_in') == true) {
             $data = $this->user_model->get_user_info($this->session->userdata('user_id'));
         } else {
@@ -108,22 +109,23 @@ class User extends CI_Controller {
         $this->load->view('footer_view', $data);
     }
     
+    /*
+        Edit user information
+        parameter: user id
+    */
     public function edit($id = null) {
         $this->load->library('form_validation');
         $this->load->helper('html');
         
         $error = '';
         //die('xxxxxxxxxxxx');
-        
         if ($id==null) {
             redirect('user/profile');
         }
-        
         //you can't edit if it is not your profile.
         if ($this->session->userdata('user_id') != $id) {
              redirect('user/profile');
         }
-        
         if ($this->session->userdata('logged_in') == true) {
             $data = $this->user_model->get_user_info($this->session->userdata('user_id'));
         }
@@ -271,17 +273,16 @@ class User extends CI_Controller {
                 $this->image_lib->initialize($config2); 
                 $this->image_lib->crop();
 
-                 if ($this->image_lib->crop()){
+                 if ($this->image_lib->crop()) {
                     list($txt, $ext) = explode('.', $src);
                     $new_name = $txt.'_thumb.'.$ext;
                     $temppath = 'images/'.$src;
-                    if (file_exists ($temppath)) 
-                    { 
+                    if (file_exists ($temppath)) { 
                         @unlink($temppath); 
                     }
                     $this->user_model->add_image($user_id, $new_name);
                     redirect('user/profile');
-                 }else{
+                 } else {
                     die($this->image_lib->display_errors('', ''));   
                  }
                                                               
@@ -290,13 +291,13 @@ class User extends CI_Controller {
         $data['imgSrc'] = '';
         $data['displayname'] = '';
         
-        if(isset($msg)) {
+        if (isset($msg)) {
             $data['msg'] = $msg;
         }
-        if(isset($imgSrc)) {
+        if (isset($imgSrc)) {
             $data['imgSrc'] = $imgSrc;
         }
-        if(isset($displayname)) {
+        if (isset($displayname)) {
             $data['displayname'] = $displayname;
         }
        
@@ -317,24 +318,38 @@ class User extends CI_Controller {
         $this->login();
     }
     
+    /*
+        Checks if email exists
+        returns false if email exists else true
+        parameter: $email
+    */
     public function email_not_exists($email) {
         $this->form_validation->set_message('email_not_exists','Email address already exists.');
-        if($this->user_model->email_exists()) {
+        if ($this->user_model->email_exists()) {
             return false;
         } else {
             return true;
         }
     }
     
+    /*
+        Checks if username exists
+        returns false if it exists else true
+        parameter: username
+    */
     public function username_not_exists($username) {
         $this->form_validation->set_message('username_not_exists','Username already exists.');
-        if($this->user_model->username_exists()) {
+        if ($this->user_model->username_exists()) {
             return false;
         } else {
             return true;
         }
     }
     
+    /*
+        Search a user
+        if user found returns userdata
+    */
     public function search_user() {
         $keyword=$this->input->post('keyword');
         $data=$this->user_model->GetRow($keyword);        

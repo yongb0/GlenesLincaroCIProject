@@ -10,7 +10,10 @@ class Message extends CI_Controller {
         $this->load->model('message_model');
         $this->load->model('user_model');
     }
-   
+    
+    /*
+        Adds message in db
+    */
     public function add() {
         
         $this->load->library('form_validation');
@@ -38,6 +41,10 @@ class Message extends CI_Controller {
         $this->load->view('footer_view',$data);
     }
     
+    /*
+        Removes message in db
+        return json for ajax
+    */
     public function remove() {
         $to_id = $this->input->post('to_id');
         if ($this->session->userdata('logged_in') == true) {
@@ -51,6 +58,9 @@ class Message extends CI_Controller {
          echo json_encode($return);
     }
     
+    /*
+        Called on message list page
+    */
     public function home() {
         
         $my_id = $this->session->userdata('user_id');
@@ -65,6 +75,10 @@ class Message extends CI_Controller {
         
     }
     
+    /*
+        Retrieves conversation details
+        parameter: $to_id
+    */
     public function details($to_id) {
         
         if ($this->session->userdata('logged_in') == true) {
@@ -94,6 +108,12 @@ class Message extends CI_Controller {
         
     }
     
+    /*
+        Retrieves users you had conversation with
+        To be displayed on sidebar
+        parameter: current user's user id
+        returns user ids of users
+    */
     public function get_sidebar_list($my_id) {
         
         $recipients_or_sender_id = $this->message_model->get_sender_recipient_id($my_id);
@@ -105,6 +125,12 @@ class Message extends CI_Controller {
         return $recip;
     }
     
+    /*
+        Saves message reply to the database
+        On success returns html to be displayed using ajax
+        On failure returns error status
+        Returns json data
+    */
     public function reply() {
         if ($this->session->userdata('logged_in') == true) {
             
@@ -141,6 +167,11 @@ class Message extends CI_Controller {
         }
     }
     
+    /*
+        Retrieves more messages from db
+        to be displayed in page using ajax
+        returns json encoded html
+    */
     public function loadmore() {
         
       if ($this->session->userdata('logged_in') == true) {
