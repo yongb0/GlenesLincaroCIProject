@@ -1,12 +1,14 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class User extends CI_Controller{
-    public function __construct()
-    {
+<?php 
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class User extends CI_Controller {
+    public function __construct() {
         parent::__construct();
         $this->load->model('user_model');
     }
-    public function index()
-    {
+    public function index() {
         if(($this->session->userdata('user_name')!=""))
         {
             //$this->welcome();
@@ -20,21 +22,19 @@ class User extends CI_Controller{
             $this->load->view('footer_view',$data); */
         }
     }
-    public function welcome()
-    {
+    public function welcome() {
         $data['title']= 'Welcome';
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view('welcome_view.php', $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
     }
-    public function login()
-    {
+    public function login() {
         $this->load->library('form_validation');
         if($this->input->post()){
             $email=$this->input->post('email');
             $password=md5($this->input->post('pass'));
 
-            $result=$this->user_model->login($email,$password);
+            $result=$this->user_model->login($email, $password);
             if ($result) {
                 //$this->welcome();
                 redirect('message/home');
@@ -45,9 +45,9 @@ class User extends CI_Controller{
         }
         
         $data['title']= 'Login';
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view('login_view.php', $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
         
         if ($this->session->userdata('logged_in') == true) {
             redirect('message/home');
@@ -79,15 +79,15 @@ class User extends CI_Controller{
     }
         
         $data['title']= 'Sign Up';
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view("registration_view.php", $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
     }
     public function thank() {
         $data['title']= 'Thank';
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view('thank_view.php', $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
     }
     
     /**
@@ -103,9 +103,9 @@ class User extends CI_Controller{
             redirect($this->login());
         }
         $data['title'] = 'profile';
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view('profile_view.php', $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
     }
     
     public function edit($id = null) {
@@ -170,9 +170,9 @@ class User extends CI_Controller{
                
                 $data['upload_error'] = $error;
                 $data['title'] = 'Edit Info';
-                $this->load->view('header_view',$data);
+                $this->load->view('header_view', $data);
                 $this->load->view('edit_view.php', $data);
-                $this->load->view('footer_view',$data);
+                $this->load->view('footer_view', $data);
                 
                 return;
             }
@@ -185,9 +185,9 @@ class User extends CI_Controller{
        /*  print_r($data);
         die; */
         
-        $this->load->view('header_view',$data);
+        $this->load->view('header_view', $data);
         $this->load->view('edit_view.php', $data);
-        $this->load->view('footer_view',$data);
+        $this->load->view('footer_view', $data);
         
         
        
@@ -196,17 +196,19 @@ class User extends CI_Controller{
     /*
     Return upload error message if it fails
     */
-    public function profile_upload($user_id, $file, $post){
+    public function profile_upload($user_id, $file, $post) {
             
             $profile_id = 12345;
 
         /***********************************************************
             0 - Remove The Temp image if it exists
         ***********************************************************/
-        if (!isset($post['x']) && !isset($file['image']['name']) ){
+        if (!isset($post['x']) && !isset($file['image']['name']) ) {
             //Delete users temp image
                 $temppath = 'images/'.$profile_id.'_temp.jpeg';
-                if (file_exists ($temppath)){ @unlink($temppath); }
+                if (file_exists ($temppath)) { 
+                    @unlink($temppath); 
+                }
         } 
 
         if (isset($file['image']['name'])) {
@@ -237,7 +239,7 @@ class User extends CI_Controller{
             3- Cropping & Converting The Image To Jpg
         ***********************************************************/
             
-        if (isset($post['x'])){
+        if (isset($post['x'])) {
             //die('xxxxxxxxxxxxxxx');
             //the file type posted
                 $type = $post['type'];	
@@ -288,20 +290,22 @@ class User extends CI_Controller{
         $data['imgSrc'] = '';
         $data['displayname'] = '';
         
-        if(isset($msg))
+        if(isset($msg)) {
             $data['msg'] = $msg;
-        if(isset($imgSrc))
+        }
+        if(isset($imgSrc)) {
             $data['imgSrc'] = $imgSrc;
-        if(isset($displayname))
+        }
+        if(isset($displayname)) {
             $data['displayname'] = $displayname;
+        }
        
         return $data;
         
     }
  
     
-    public function logout()
-    {
+    public function logout() {
         $newdata = array(
         'user_id'   =>'',
         'user_name'  =>'',
@@ -313,7 +317,7 @@ class User extends CI_Controller{
         $this->login();
     }
     
-    public function email_not_exists($email){
+    public function email_not_exists($email) {
         $this->form_validation->set_message('email_not_exists','Email address already exists.');
         if($this->user_model->email_exists()) {
             return false;
@@ -322,7 +326,7 @@ class User extends CI_Controller{
         }
     }
     
-    public function username_not_exists($username){
+    public function username_not_exists($username) {
         $this->form_validation->set_message('username_not_exists','Username already exists.');
         if($this->user_model->username_exists()) {
             return false;
@@ -331,7 +335,7 @@ class User extends CI_Controller{
         }
     }
     
-    public function search_user(){
+    public function search_user() {
         $keyword=$this->input->post('keyword');
         $data=$this->user_model->GetRow($keyword);        
         echo json_encode($data);

@@ -1,13 +1,18 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Message extends CI_Controller{
-    public function __construct()
-    {
+<?php 
+if ( ! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class Message extends CI_Controller {
+    
+    public function __construct() {
         parent::__construct();
         $this->load->model('message_model');
         $this->load->model('user_model');
     }
    
     public function add() {
+        
         $this->load->library('form_validation');
         // field name, error message, validation rules
         if ($this->input->post()) {
@@ -33,7 +38,7 @@ class Message extends CI_Controller{
         $this->load->view('footer_view',$data);
     }
     
-    public function remove(){
+    public function remove() {
         $to_id = $this->input->post('to_id');
         if ($this->session->userdata('logged_in') == true) {
             $my_id = $this->session->userdata('user_id');
