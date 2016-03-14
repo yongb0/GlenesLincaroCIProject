@@ -242,11 +242,12 @@ class Message extends CI_Controller {
                if ($msg['from_id'] == $my_id) {
                    
                    
-                   $html .= '<div class="row msg_container base_sent">
+                   $html .= '<div class="row msg_container base_sent" id="msg_'.$msg['id'].'">
                         <div class="col-md-10 col-xs-10" style="position:relative">
                             <div class="messages msg_sent">
                                 <p>'.$msg['content'].'</p>
                                 <div class="timeSent">'.$timespan.'</div>
+                                <a href="javascript:void(0)" class="msgDel" onClick="del_single_msg('.$msg['id'].'); ">x</a>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-2 avatar">
@@ -255,7 +256,7 @@ class Message extends CI_Controller {
                
                 } else {
                    
-                    $html .= '<div class="row msg_container base_receive">
+                    $html .= '<div class="row msg_container base_receive" id="msg_'.$msg['id'].'">
                         <div class="col-md-2 col-xs-2 avatar">
                             <img src="'.$img.'" class=" img-responsive ">
                         </div>
@@ -263,6 +264,7 @@ class Message extends CI_Controller {
                             <div class="messages msg_receive">
                                 <p>'.$msg['content'].'</p>
                                 <div class="timeSent">'.$timespan.'</div>
+                                <a href="javascript:void(0)" class="msgDel" onClick="del_single_msg('.$msg['id'].'); ">x</a>
                             </div>
                         </div>
                     </div>';

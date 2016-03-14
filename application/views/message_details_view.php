@@ -167,7 +167,7 @@
 <div id="popup" style="display: none;">
     <span class="button b-close"><span>X</span></span>
        <div class="popHolder">
-            <div class="popMessage">Do you ready want to delete this conversation?</div>
+            <div class="popMessage">Do you really want to delete this conversation?</div>
             <div class="popButtonHolder">
                     <a href="javascript:void(0)" class="delConv glOk">DELETE</a>  
                     <a href="javascript:void(0)" class="b-close glCancel">CANCEL</a>
