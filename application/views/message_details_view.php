@@ -66,7 +66,9 @@
                                 
 							<div class="panel-body msg_container_base">
                                 <?php if ($message_count > 5) { ?>
-                                    <a href="javascript:void(0);" onClick="showMore();" style="text-decoration:underline;">Show more</a>
+                                    <a href="javascript:void(0);" onClick="showMore();" id="moreMsg" style="text-decoration:underline;">Show more</a>
+                                <?php } else { ?>
+                                    <a href="javascript:void(0);" onClick="showMore();" id="moreMsg" style="text-decoration:underline;display:none;">Show more</a>
                                 <?php } ?>
                                 
                                 <input type="hidden" name="limit" id="limit" value="5"/>
@@ -125,11 +127,13 @@
                                                 msg_id : '<?php echo $msg['id']; ?>'
                                                 },
                                             success :function(data){
-                                                if(data.status == 'success'){
-                                                   
-                                                }else{
-                                                   
-                                                }
+                                                
+                                                   /*  if(data.status == 'success'){
+                                                       
+                                                    }else{
+                                                       
+                                                    } */
+                                                
                                             }
                                         });
                                         </script>
@@ -187,9 +191,19 @@
                 to_id : jQuery('#to_id').val()
                 },
             success :function(data){
-                jQuery('#rezult').after(data.view);
-                jQuery('#offset').val(data.offset);
-                jQuery('#limit').val(data.limit);
+                if (data.result == 1) {
+                    jQuery('#rezult').after(data.view);
+                    jQuery('#offset').val(data.offset);
+                    jQuery('#limit').val(data.limit);
+                    if (data.cnext > 0) {
+                        
+                    } else {
+                        jQuery('#moreMsg').hide();
+                    }
+                } else if (data.result == 0) {
+                    jQuery('#moreMsg').hide();
+                }
+                
             }
         });
     }
@@ -249,7 +263,13 @@
                 },
             success :function(data){
                 if(data.status == 'success'){
-                   jQuery('.reply-html').after(data.message_html);
+                   jQuery('.reply-html').append(data.message_html);
+                   if (jQuery('.msg_container').length > 5) { 
+                        jQuery('.msg_container_base').find('.msg_container').first().remove();
+                        jQuery('#moreMsg').show();
+                   }
+                   console.log(jQuery('.msg_container :hidden').length);
+                   
                    jQuery('.reply-input').val('');
                 }else if(data.status == 'error'){
                    jQuery('.reply-html').after('Message not sent.');
@@ -258,5 +278,6 @@
             }
         });
     });
+    
 </script>
 	
