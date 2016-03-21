@@ -293,7 +293,7 @@ class Message extends CI_Controller {
     }
     
 
-    public function set_seen_message() {
+    public function set_seen_message($param1 = 0, $param2 = 0) {
 
         if ($this->session->userdata('logged_in') == true) {
             
