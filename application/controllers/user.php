@@ -12,6 +12,9 @@ class User extends CI_Controller {
     
     public function index() {
         
+        echo "new branch";
+        
+        exit();
         if (($this->session->userdata('user_name')!="")) {
             //$this->welcome();
             redirect('message/home');
