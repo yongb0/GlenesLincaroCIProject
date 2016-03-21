@@ -292,7 +292,9 @@ class Message extends CI_Controller {
       echo json_encode($data);
     }
     
+
     public function set_seen_message($param1 = 0, $param2 = 0) {
+
         if ($this->session->userdata('logged_in') == true) {
             
             $id = $this->input->post('msg_id');
