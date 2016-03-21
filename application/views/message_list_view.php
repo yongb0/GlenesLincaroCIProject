@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
           <div class="span4">
-            <h2>Message List</h2>
+            <h2>Message Listxx</h2>
 			 
 			  <div class="row">
 					<div class="col-md-2">
