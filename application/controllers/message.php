@@ -219,6 +219,8 @@ class Message extends CI_Controller {
     */
     public function loadmore() {
         
+        echo 'load more here';
+        
       if ($this->session->userdata('logged_in') == true) {
           $limit = $this->input->post('limit');
           $offset = $this->input->post('offset');
