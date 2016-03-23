@@ -219,6 +219,8 @@ class Message extends CI_Controller {
     */
     public function loadmore() {
         
+        echo 'load more here';
+        
       if ($this->session->userdata('logged_in') == true) {
           $limit = $this->input->post('limit');
           $offset = $this->input->post('offset');
@@ -292,7 +294,7 @@ class Message extends CI_Controller {
       echo json_encode($data);
     }
     
-    public function set_seen_message($param1=0) {
+    public function set_seen_message() {
 
         if ($this->session->userdata('logged_in') == true) {
             
