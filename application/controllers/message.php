@@ -220,6 +220,8 @@ class Message extends CI_Controller {
     public function loadmore() {
         
       echo 'another print';
+      
+      echo 'sdfsdfd';
         
       if ($this->session->userdata('logged_in') == true) {
           $limit = $this->input->post('limit');
